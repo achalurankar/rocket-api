@@ -83,13 +83,6 @@ public class Controller {
         return new ResponseEntity<>(chatService.removeFriend(request), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/message/listener/{userId}/{friendId}")
-    public ResponseEntity<?> messageListener(
-            @PathVariable(value = "userId") int userId,
-            @PathVariable(value = "friendId") int friend_id) throws Exception {
-        return new ResponseEntity<>(chatService.messageListener(userId, friend_id), HttpStatus.OK);
-    }
-
     @PostMapping(value = "/seen")
     public ResponseEntity<?> setSeen(@RequestBody Request request) throws Exception {
         return new ResponseEntity<>(chatService.setSeen(request), HttpStatus.OK);

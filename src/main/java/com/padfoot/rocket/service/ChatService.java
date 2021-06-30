@@ -168,23 +168,6 @@ public class ChatService extends Query {
         return jdbcTemplate.query(sql, parameters, GET_USERS_MAPPER);
     }
 
-    /**
-     * Real time new message listener
-     */
-    public List<Message> messageListener(int userId, int receiverId) {
-        List<Message> oldList = null;
-        while (true) {
-            List<Message> newList = getMessages(userId, receiverId);
-            if (oldList == null) {
-                oldList = newList;
-            } else {
-                if (oldList.size() != newList.size()) {
-                    return newList;
-                }
-            }
-        }
-    }
-
     public String setSeen(Request request) {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("user_id", request.getUserId());
