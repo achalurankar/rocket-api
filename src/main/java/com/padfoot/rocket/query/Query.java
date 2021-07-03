@@ -61,7 +61,7 @@ public class Query {
     }
 
     public String getRequestsQuery() {
-        return "select ut.user_id, ut.username, ut.email_id, ut.picture from" +
+        return "select ut.user_id, ut.username, ut.email_id, ut.picture, ut.picture_version from" +
                 " users ut" +
                 " inner join requests rt on ut.user_id = rt.request_from" +
                 " where rt.request_to = :user_id;";
