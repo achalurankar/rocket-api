@@ -115,7 +115,7 @@ public class Query {
     }
 
     public String getUserStatusQuery() {
-        return "select last_seen from users";
+        return "select last_seen from users where user_id = :user_id";
     }
 
     public RowMapper<String> LAST_SEEN_MAPPER = (rs, rowNum) -> rs.getString("last_seen");
