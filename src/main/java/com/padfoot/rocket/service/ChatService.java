@@ -3,6 +3,7 @@ package com.padfoot.rocket.service;
 import com.padfoot.rocket.entity.Message;
 import com.padfoot.rocket.entity.Request;
 import com.padfoot.rocket.entity.User;
+import com.padfoot.rocket.entity.UserStatus;
 import com.padfoot.rocket.query.Query;
 import com.padfoot.rocket.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -177,5 +178,22 @@ public class ChatService extends Query {
         String sql = setSeenQuery();
         int result = jdbcTemplate.update(sql, parameters);
         return Constants.SUCCESS;
+    }
+
+    public String setUserStatus(UserStatus userStatus) {
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("user_id", userStatus.getUserId());
+        parameters.addValue("status", userStatus.getStatus());
+        String sql = setUserStatusQuery();
+        int result = jdbcTemplate.update(sql, parameters);
+        return Constants.SUCCESS;
+    }
+
+    public String getUserStatus(int userId) {
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("user_id", userId);
+        String sql = getUserStatusQuery();
+        List<String> result = jdbcTemplate.query(sql, parameters, LAST_SEEN_MAPPER);
+        return result.size() == 0 ? "" : result.get(0);
     }
 }

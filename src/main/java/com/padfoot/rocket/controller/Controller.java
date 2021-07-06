@@ -3,6 +3,7 @@ package com.padfoot.rocket.controller;
 import com.padfoot.rocket.entity.Message;
 import com.padfoot.rocket.entity.Request;
 import com.padfoot.rocket.entity.User;
+import com.padfoot.rocket.entity.UserStatus;
 import com.padfoot.rocket.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -86,6 +87,17 @@ public class Controller {
     @PostMapping(value = "/seen")
     public ResponseEntity<?> setSeen(@RequestBody Request request) throws Exception {
         return new ResponseEntity<>(chatService.setSeen(request), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/user/status")
+    public ResponseEntity<?> setUserStatus(@RequestBody UserStatus userStatus) throws Exception {
+        return new ResponseEntity<>(chatService.setUserStatus(userStatus), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/user/status/{userId}")
+    public ResponseEntity<?> getUserStatus(
+            @PathVariable(value = "userId") int userId) throws Exception {
+        return new ResponseEntity<>(chatService.getUserStatus(userId), HttpStatus.OK);
     }
 
 }

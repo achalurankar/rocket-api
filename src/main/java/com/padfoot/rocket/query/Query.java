@@ -108,4 +108,15 @@ public class Query {
                 "and " +
                 "seen=false";
     }
+
+
+    public String setUserStatusQuery() {
+        return "update users set last_seen = :status where user_id = :user_id";
+    }
+
+    public String getUserStatusQuery() {
+        return "select last_seen from users";
+    }
+
+    public RowMapper<String> LAST_SEEN_MAPPER = (rs, rowNum) -> rs.getString("last_seen");
 }
