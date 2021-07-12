@@ -1,9 +1,6 @@
 package com.padfoot.rocket.service;
 
-import com.padfoot.rocket.entity.Message;
-import com.padfoot.rocket.entity.Request;
-import com.padfoot.rocket.entity.User;
-import com.padfoot.rocket.entity.UserStatus;
+import com.padfoot.rocket.entity.*;
 import com.padfoot.rocket.query.Query;
 import com.padfoot.rocket.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -136,11 +133,28 @@ public class ChatService extends Query {
     /**
      * Get list of friends for a user
      */
-    public List<User> getFriends(int userId) {
+    public List<Friend> getFriends(int userId) {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("user_id", userId);
         String sql = getFriendsQuery();
-        return jdbcTemplate.query(sql, parameters, GET_USERS_MAPPER);
+        //get friend list
+        List<Friend> friends = jdbcTemplate.query(sql, parameters, GET_FRIENDS_MAPPER);
+        for (Friend friend : friends) {
+            parameters.addValue("conversation_id", userId + "/" + friend.getUserId());
+            sql = getRecentMessageQuery();
+            //get recent message with particular friend
+            List<Friend.RecentMessage> recentMessage = jdbcTemplate.query(sql, parameters, GET_RECENT_MESSAGE_MAPPER);
+            if (recentMessage.size() != 0) {
+                //attach recent message to friend list
+                friend.getRecentMessage().setText(recentMessage.get(0).getText());
+                friend.getRecentMessage().setDateSent(recentMessage.get(0).getDateSent());
+                friend.getRecentMessage().setSenderId(recentMessage.get(0).getSenderId());
+                friend.getRecentMessage().setSeen(recentMessage.get(0).isSeen());
+            } else
+                //no messages for this chat
+                friend.setRecentMessage(null);
+        }
+        return friends;
     }
 
     /**

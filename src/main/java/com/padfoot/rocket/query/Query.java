@@ -1,5 +1,6 @@
 package com.padfoot.rocket.query;
 
+import com.padfoot.rocket.entity.Friend;
 import com.padfoot.rocket.entity.Message;
 import com.padfoot.rocket.entity.User;
 import org.springframework.jdbc.core.RowMapper;
@@ -92,6 +93,33 @@ public class Query {
                 " inner join friends ft on ut.user_id = ft.friend_id" +
                 " where ft.user_id = :user_id;";
     }
+
+    public String getRecentMessageQuery() {
+        return "select text, date_sent, sender_id, seen from chat_logs where conversation_id = :conversation_id order by date_sent DESC limit 1";
+    }
+
+    public String getUnseenCountQuery() {
+        return "";
+    }
+
+    public RowMapper<Friend> GET_FRIENDS_MAPPER = (rs, rowNum) -> {
+        Friend friend = new Friend();
+        friend.setUserId(rs.getInt("user_id"));
+        friend.setUsername(rs.getString("username"));
+        friend.setPicture(rs.getString("picture"));
+        friend.setPictureVersion(rs.getLong("picture_version"));
+        friend.setRecentMessage(new Friend.RecentMessage());
+        return friend;
+    };
+
+    public RowMapper<Friend.RecentMessage> GET_RECENT_MESSAGE_MAPPER = (rs, rowNum) -> {
+        Friend.RecentMessage rm = new Friend.RecentMessage();
+        rm.setText(rs.getString("text"));
+        rm.setDateSent(rs.getString("date_sent"));
+        rm.setSenderId(rs.getInt("sender_id"));
+        rm.setSeen(rs.getBoolean("seen"));
+        return rm;
+    };
 
     public String removeFriendQuery() {
         return "delete from friends where user_id = :user_id and friend_id = :friend_id;" +
